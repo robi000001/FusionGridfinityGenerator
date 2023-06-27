@@ -70,6 +70,7 @@ BIN_REAL_DIMENSIONS_TABLE = "real_dimensions"
 BIN_WALL_THICKNESS_INPUT_ID = 'bin_wall_thickness'
 BIN_GENERATE_BASE_INPUT_ID = 'bin_generate_base'
 BIN_GENERATE_BODY_INPUT_ID = 'bin_generate_body'
+BIN_SCREW_HOLES_DISTANCE_INPUT_ID = 'bin_screw_holes_distance'
 BIN_SCREW_HOLES_INPUT_ID = 'bin_screw_holes'
 BIN_MAGNET_CUTOUTS_INPUT_ID = 'bin_magnet_cutouts'
 BIN_SCREW_DIAMETER_INPUT = 'screw_diameter'
@@ -134,6 +135,7 @@ def defaultUiState():
         tabAngle=45,
         tabOffset=0,
         hasBase=True,
+        screwHolesDistance=const.DIMENSION_SCREW_HOLES_DISTANCE, # 2.6
         hasBaseScrewHole=False,
         baseScrewHoleSize=const.DIMENSION_SCREW_HOLE_DIAMETER,
         hasBaseMagnetSockets=False,
@@ -344,6 +346,7 @@ def is_all_input_valid(inputs: adsk.core.CommandInputs):
     bin_screw_hole_diameter: adsk.core.ValueCommandInput = inputs.itemById(BIN_SCREW_DIAMETER_INPUT)
     bin_magnet_cutout_diameter: adsk.core.ValueCommandInput = inputs.itemById(BIN_MAGNET_DIAMETER_INPUT)
     bin_magnet_cutout_depth: adsk.core.ValueCommandInput = inputs.itemById(BIN_MAGNET_HEIGHT_INPUT)
+    bin_screw_holes_distance: adsk.core.ValueCommandInput = inputs.itemById(BIN_SCREW_HOLES_DISTANCE_INPUT_ID)
     with_lip: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_WITH_LIP_INPUT_ID)
     with_lip_notches: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_WITH_LIP_NOTCHES_INPUT_ID)
     has_scoop: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_HAS_SCOOP_INPUT_ID)
@@ -513,6 +516,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     screwSizeInput.isMinimumInclusive = True
     screwSizeInput.maximumValue = 1
     screwSizeInput.isMaximumInclusive = True
+
     baseFeaturesGroup.children.addBoolValueInput(BIN_MAGNET_CUTOUTS_INPUT_ID, 'Add magnet cutouts', True, '', uiState.hasBaseMagnetSockets)
     magnetSizeInput = baseFeaturesGroup.children.addValueInput(BIN_MAGNET_DIAMETER_INPUT, 'Magnet cutout diameter', defaultLengthUnits, adsk.core.ValueInput.createByReal(uiState.baseMagnetSocketSize))
     magnetSizeInput.minimumValue = 0.1
@@ -522,6 +526,10 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     magnetHeightInput = baseFeaturesGroup.children.addValueInput(BIN_MAGNET_HEIGHT_INPUT, 'Magnet cutout depth', defaultLengthUnits, adsk.core.ValueInput.createByReal(uiState.baseMagnetSocketDepth))
     magnetHeightInput.minimumValue = 0.1
     magnetHeightInput.isMinimumInclusive = True
+
+    screwHoleDistanceInput = baseFeaturesGroup.children.addValueInput(BIN_SCREW_HOLES_DISTANCE_INPUT_ID, 'Screw hole distance (2.6 cm)', defaultLengthUnits, adsk.core.ValueInput.createByReal(uiState.screwHolesDistance)) # screwHoleDistance
+    screwHoleDistanceInput.minimumValue = 1.0
+    screwHoleDistanceInput.isMinimumInclusive = True
 
     userChangesGroup = inputs.addGroupCommandInput(USER_CHANGES_GROUP_ID, 'Changes')
     userChangesGroup.isExpanded = uiState.getGroupExpandedState(USER_CHANGES_GROUP_ID)
@@ -615,6 +623,8 @@ def record_input_change(changed_input: adsk.core.CommandInput):
         uiState.tabOffset = changed_input.value
     elif changed_input.id == BIN_GENERATE_BASE_INPUT_ID:
         uiState.hasBase = changed_input.value
+    elif changed_input.id == BIN_SCREW_HOLES_DISTANCE_INPUT_ID:
+        uiState.baseScrewHoleDistance = changed_input.value
     elif changed_input.id == BIN_SCREW_HOLES_INPUT_ID:
         uiState.hasBaseScrewHole = changed_input.value
     elif changed_input.id == BIN_SCREW_DIAMETER_INPUT:
@@ -822,6 +832,7 @@ def generateBin(args: adsk.core.CommandEventArgs):
     bin_screw_hole_diameter: adsk.core.ValueCommandInput = inputs.itemById(BIN_SCREW_DIAMETER_INPUT)
     bin_magnet_cutout_diameter: adsk.core.ValueCommandInput = inputs.itemById(BIN_MAGNET_DIAMETER_INPUT)
     bin_magnet_cutout_depth: adsk.core.ValueCommandInput = inputs.itemById(BIN_MAGNET_HEIGHT_INPUT)
+    bin_screw_holes_distance: adsk.core.ValueCommandInput = inputs.itemById(BIN_SCREW_HOLES_DISTANCE_INPUT_ID)
     with_lip: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_WITH_LIP_INPUT_ID)
     with_lip_notches: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_WITH_LIP_NOTCHES_INPUT_ID)
     has_scoop: adsk.core.BoolValueCommandInput = inputs.itemById(BIN_HAS_SCOOP_INPUT_ID)
@@ -866,6 +877,7 @@ def generateBin(args: adsk.core.CommandEventArgs):
         baseGeneratorInput.screwHolesDiameter = bin_screw_hole_diameter.value
         baseGeneratorInput.magnetCutoutsDiameter = bin_magnet_cutout_diameter.value
         baseGeneratorInput.magnetCutoutsDepth = bin_magnet_cutout_depth.value
+        baseGeneratorInput.screwHolesDistance = bin_screw_holes_distance.value
 
         baseBody: adsk.fusion.BRepBody
         

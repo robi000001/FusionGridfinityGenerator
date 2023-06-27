@@ -1,6 +1,6 @@
 import adsk.core, adsk.fusion, traceback
 
-from .const import DIMENSION_MAGNET_CUTOUT_DEPTH, DIMENSION_MAGNET_CUTOUT_DIAMETER, DIMENSION_SCREW_HOLE_DIAMETER
+from .const import DIMENSION_MAGNET_CUTOUT_DEPTH, DIMENSION_MAGNET_CUTOUT_DIAMETER, DIMENSION_SCREW_HOLE_DIAMETER, DIMENSION_SCREW_HOLES_DISTANCE
 
 class BaseGeneratorInput():
     def __init__(self):
@@ -10,6 +10,7 @@ class BaseGeneratorInput():
         self.screwHolesDiameter = DIMENSION_SCREW_HOLE_DIAMETER
         self.magnetCutoutsDiameter = DIMENSION_MAGNET_CUTOUT_DIAMETER
         self.magnetCutoutsDepth = DIMENSION_MAGNET_CUTOUT_DEPTH
+        self.screwHolesDistance = DIMENSION_SCREW_HOLES_DISTANCE
 
     @property
     def originPoint(self) -> adsk.core.Point3D:

@@ -1,6 +1,7 @@
 from typing import Dict
 from dataclasses import dataclass
 
+
 @dataclass
 class CompartmentTableRow:
     x: int
@@ -8,6 +9,7 @@ class CompartmentTableRow:
     width: int
     length: int
     depth: float
+
 
 @dataclass
 class InputState:
@@ -35,6 +37,7 @@ class InputState:
     tabAngle: float
     tabOffset: float
     hasBase: bool
+    screwHolesDistance: float
     hasBaseScrewHole: bool
     baseScrewHoleSize: float
     hasBaseMagnetSockets: bool
@@ -44,7 +47,7 @@ class InputState:
     customCompartments: list[CompartmentTableRow]
 
     def getGroupExpandedState(self, id: str):
-      if id in self.groups:
-        return self.groups[id]
-      else:
-        return True
+        if id in self.groups:
+            return self.groups[id]
+        else:
+            return True

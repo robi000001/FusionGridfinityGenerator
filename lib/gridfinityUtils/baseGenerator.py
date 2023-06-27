@@ -123,7 +123,7 @@ def createGridfinityBase(
 
     baseBottomPlane = baseBottomExtrude.endFaces.item(0)
     baseCenterPoint = adsk.core.Point3D.create(actual_base_width / 2, actual_base_length / 2, baseBottomPlane.boundingBox.minPoint.z)
-    baseHoleCenterPoint = adsk.core.Point3D.create(baseCenterPoint.x - const.DIMENSION_SCREW_HOLES_DISTANCE / 2, baseCenterPoint.y - const.DIMENSION_SCREW_HOLES_DISTANCE / 2, baseCenterPoint.z)
+    baseHoleCenterPoint = adsk.core.Point3D.create(baseCenterPoint.x - input.screwHolesDistance / 2, baseCenterPoint.y - input.screwHolesDistance / 2, baseCenterPoint.z)
     if input.hasScrewHoles:
         screwHoleBody = shapeUtils.simpleCylinder(
             baseBottomPlane,
@@ -186,11 +186,11 @@ def createGridfinityBase(
         patternInput = rectangularPatternFeatures.createInput(cutoutBodies,
             targetComponent.xConstructionAxis,
             adsk.core.ValueInput.createByReal(2),
-            adsk.core.ValueInput.createByReal(const.DIMENSION_SCREW_HOLES_DISTANCE),
+            adsk.core.ValueInput.createByReal(input.screwHolesDistance),
             adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
         patternInput.directionTwoEntity = targetComponent.yConstructionAxis
         patternInput.quantityTwo = adsk.core.ValueInput.createByReal(2)
-        patternInput.distanceTwo = adsk.core.ValueInput.createByReal(const.DIMENSION_SCREW_HOLES_DISTANCE)
+        patternInput.distanceTwo = adsk.core.ValueInput.createByReal(input.screwHolesDistance)
         patternFeature = rectangularPatternFeatures.add(patternInput)
         combineUtils.cutBody(baseBody, commonUtils.objectCollectionFromList(list(cutoutBodies) + list(patternFeature.bodies)), targetComponent)
 
