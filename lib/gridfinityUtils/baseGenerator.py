@@ -219,7 +219,7 @@ def createBaseWithClearance(input: BaseGeneratorInput, targetComponent: adsk.fus
         adsk.fusion.SurfaceExtendTypes.NaturalSurfaceExtendType,
         True
     )
-    # features.extendFeatures.add(extendClearanceSurfaceFeatureInput)
+    features.extendFeatures.add(extendClearanceSurfaceFeatureInput)
 
     # thicken faces to add clearance
     thickenFeatureInput = features.thickenFeatures.createInput(
