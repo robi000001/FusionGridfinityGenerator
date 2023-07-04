@@ -157,7 +157,16 @@ def createGridfinityBaseplate(input: BaseplateGeneratorInput, targetComponent: a
             targetComponent,
         )
         holeCuttingBodies.append(magnetSocketBody)
-    
+        magnetSocketBodyRim = shapeUtils.simpleCylinder(
+            faceUtils.getBottomFace(baseBody),
+            0,
+            const.DIMENSION_MAGNET_CUTOUT_RIM_DEPTH,
+            input.magnetCutoutsDiameter / 2+const.DIMENSION_MAGNET_CUTOUT_RIM,
+            holeCenterPoint,
+            targetComponent,
+        )
+        holeCuttingBodies.append(magnetSocketBodyRim)
+
     if input.hasExtendedBottom and input.hasScrewHoles:
         screwHoleBody = shapeUtils.simpleCylinder(
             faceUtils.getBottomFace(baseBody),
