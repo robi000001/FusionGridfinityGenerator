@@ -149,7 +149,16 @@ def createGridfinityBase(
             targetComponent,
         )
         cutoutBodies.add(magnetSocketBody)
-        
+        magnetSocketBodyRim = shapeUtils.simpleCylinder(
+            faceUtils.getBottomFace(baseBody),
+            0,
+            -const.DIMENSION_MAGNET_CUTOUT_RIM_DEPTH,
+            input.magnetCutoutsDiameter / 2+const.DIMENSION_MAGNET_CUTOUT_RIM,
+            adsk.core.Point3D.create(baseHoleCenterPoint.x, baseHoleCenterPoint.y, 0),
+            targetComponent,
+        )
+        cutoutBodies.add(magnetSocketBodyRim)
+
         if input.hasScrewHoles and (const.BIN_BASE_HEIGHT - input.magnetCutoutsDepth) > const.BIN_MAGNET_HOLE_GROOVE_DEPTH:
             grooveBody = shapeUtils.simpleCylinder(
                 baseBottomPlane,
